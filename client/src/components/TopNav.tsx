@@ -76,7 +76,7 @@ const TopNav: React.FC = () => {
 
   return (
     <nav className="">
-      <div className="bg-white py-[20px] px-[20px] md:px-[80px] flex lg:gap-[50px] items-center justify-between lg:justify-normal font-sans">
+      <div className="bg-white py-[20px] px-[20px] md:px-[80px] flex lg:gap-[50px] items-center justify-between lg:justify-between font-sans xl:max-w-[1280px] xl:m-auto xl:px-0">
         <a href="/" className=" hidden lg:block">
           <span className="text-[30px] font-[900]">Logo</span>
         </a>
@@ -205,33 +205,35 @@ const TopNav: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="hidden lg:flex bg-[#FCFCFD] border-[1px] border-[#EAECF0] py-[20px] px-[20px] md:px-[80px] gap-7 items-center justify-end">
-        {activeChildren.length > 0 &&
-          activeChildren.map((child, index) => (
-            <a
-              key={index}
-              href={child.link}
-              className="text-[#1D2939] text-[14px] font-[700]"
-            >
-              {child.text}
-            </a>
-          ))}
-        <button
-          type="button"
-          className="w-[48px] rounded-[50%] h-[48px] border-[1px] border-purple flex items-center justify-center text-purple font-[500] font-sans"
-        >
-          <TfiHeart size={20} />
-        </button>
-        <button
-          onClick={() => navigate("/checkout")}
-          className=" w-[155px] rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans gap-2"
-        >
-          <IoCartOutline size={20} />
-          <span>My cart</span>
-          <div className="bg-white w-[20px] h-[20px] rounded-[50%] flex items-center justify-center text-[10px] text-purple font-[900]">
-            2
-          </div>
-        </button>
+      <div className="border-[1px] border-[#EAECF0]">
+        <div className="hidden lg:flex bg-[#FCFCFD]  py-[20px] px-[20px] md:px-[80px] items-center justify-between xl:max-w-[1280px] xl:m-auto xl:px-0">
+          {activeChildren.length > 0 &&
+            activeChildren.map((child, index) => (
+              <a
+                key={index}
+                href={child.link}
+                className="text-[#1D2939] text-[14px] font-[700]"
+              >
+                {child.text}
+              </a>
+            ))}
+          <button
+            type="button"
+            className="w-[48px] rounded-[50%] h-[48px] border-[1px] border-purple flex items-center justify-center text-purple font-[500] font-sans"
+          >
+            <TfiHeart size={20} />
+          </button>
+          <button
+            onClick={() => navigate("/checkout")}
+            className=" w-[155px] rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans gap-2"
+          >
+            <IoCartOutline size={20} />
+            <span>My cart</span>
+            <div className="bg-white w-[20px] h-[20px] rounded-[50%] flex items-center justify-center text-[10px] text-purple font-[900]">
+              2
+            </div>
+          </button>
+        </div>
       </div>
     </nav>
   );
