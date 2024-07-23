@@ -31,7 +31,7 @@ export default function AirtimeForm() {
     };
   }
 
-  const cartItems = useAppSelector((state) => state.cart.cartItems);
+  // const cartItems = useAppSelector((state) => state.cart.cartItems);
   const dispatch = useAppDispatch();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   async function handleSubmit(e) {
@@ -85,49 +85,46 @@ export default function AirtimeForm() {
         <p className="text-[14px] xl:text-[16px]">Please enter your details.</p>
       </div>
 
-      <fieldset disabled={loading}>
-        <div className="space-y-[24px] w-full">
-          <ProviderRadio
-            field={provider}
-            onChange={(e) => setProvider(e.target.value)}
-          />
-          <Input
-            name="phone"
-            id="phone"
-            type="tel"
-            title="Enter your eleven digit phone number."
-            required={true}
-            label="Phone Number"
-            field={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <Input
-            name="amount"
-            id="amount"
-            type="text"
-            title="Enter the money's worth of airtime you want to buy."
-            required={true}
-            label="Amount"
-            field={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+      <fieldset disabled={loading} className="space-y-[24px] w-full">
+        <ProviderRadio
+          field={provider}
+          onChange={(e) => setProvider(e.target.value)}
+        />
+        <Input
+          name="phone"
+          id="phone"
+          type="tel"
+          title="Enter your eleven digit phone number."
+          required={true}
+          label="Phone Number"
+          field={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <Input
+          name="amount"
+          id="amount"
+          type="text"
+          title="Enter the money's worth of airtime you want to buy."
+          required={true}
+          label="Amount"
+          field={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
 
-          <Input
-            name="email"
-            id="email"
-            type="email"
-            title="Optionally provide an email address."
-            required={false}
-            label="Email Address"
-            field={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-[12px] flex flex-col">
-          <PrimaryBtn title="Add to cart" type="submit" />
-          <SecondaryBtn title="Proceed to checkout" type="button" />
-        </div>
+        <Input
+          name="email"
+          id="email"
+          type="email"
+          title="Optionally provide an email address."
+          required={false}
+          label="Email Address"
+          field={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </fieldset>
+      <fieldset disabled={loading} className="space-y-[12px] flex flex-col">
+        <PrimaryBtn title="Add to cart" type="submit" />
+        <SecondaryBtn title="Proceed to checkout" type="button" />
       </fieldset>
     </form>
   );
