@@ -15,7 +15,7 @@ const menuData = [
   },
   {
     key: "utilities",
-    menu: <></>,
+    menu: <AirtimeForm />,
     title: "Buy utilities",
   },
 ];

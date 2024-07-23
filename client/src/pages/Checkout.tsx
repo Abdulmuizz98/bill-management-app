@@ -106,7 +106,7 @@ export default function Checkout() {
       fullName,
     },
     publicKey,
-    text: `Pay ₦${total}`,
+    text: `Pay ₦ ${total}`,
     onSuccess: (transaction) => {
       const { trans: transId } = transaction;
       try {
@@ -164,7 +164,7 @@ export default function Checkout() {
 
   return (
     <>
-      <main className="flex flex-col md:flex-row gap-6 font-sans">
+      <main className="flex flex-col md:flex-row gap-6 font-sans xl:max-w-[1280px] xl:m-auto xl:px-0">
         <div className="md:flex-1">
           <div className="flex flex-col">
             <h3 className="text-[22px] text-[#101828] font-[900]">Checkout </h3>
@@ -321,16 +321,16 @@ export default function Checkout() {
           <div className="flex flex-col gap-3 text-[14px]">
             <div className="flex justify-between items-center">
               <span className="text-[#667085]">Sub total</span>
-              <span className="text-[#101828] font-[700]">₦{total}</span>
+              <span className="text-[#101828] font-[700]">₦ {total}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#667085]">Gateway fee</span>
-              <span className="text-[#101828] font-[700]">₦{gatewayFee}</span>
+              <span className="text-[#101828] font-[700]">₦ {gatewayFee}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#667085]">Total</span>
               <span className="text-[#101828] font-[700]">
-                ₦{total + gatewayFee}
+                ₦ {total + gatewayFee}
               </span>
             </div>
           </div>
