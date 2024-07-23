@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { removeCartItem, updateCartItem } from "../store/cartSlice";
 import { useNavigate } from "react-router-dom";
+import TopNav from "../components/TopNav";
+import Footer from "../components/Footer";
 // import PaystackPop from "@paystack/inline-js";
 import axios from "axios";
 import { PaystackButton } from "react-paystack";
@@ -25,8 +27,6 @@ import PaymentSuccessModal from "../modals/payment-success-modal";
 //     "reference": "nms6uvr1pl"
 //   }
 // }
-
-function enqueueTransactions() {}
 
 interface CartItem {
   productId: string;
@@ -164,6 +164,7 @@ export default function Checkout() {
 
   return (
     <>
+      <TopNav />
       <main className="flex flex-col md:flex-row gap-6 font-sans xl:max-w-[1280px] xl:m-auto xl:px-0">
         <div className="md:flex-1">
           <div className="flex flex-col">
@@ -351,6 +352,7 @@ export default function Checkout() {
           </div>
         </form>
       </main>
+      <Footer />
       {open && <PaymentSuccessModal setOpen={setOpen} />}
     </>
   );

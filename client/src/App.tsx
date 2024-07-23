@@ -3,7 +3,7 @@ import Home from "./pages/Bills";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Checkout from "./pages/Checkout";
-import GuestLayout from "./layouts/GuestLayout";
+// import GuestLayout from "./layouts/GuestLayout";
 import { getCart } from "./store/cartSlice";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { useEffect } from "react";
@@ -20,15 +20,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <GuestLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/bills" element={<Bills />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-      </GuestLayout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/bills" element={<Bills />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
     </BrowserRouter>
   );
 }

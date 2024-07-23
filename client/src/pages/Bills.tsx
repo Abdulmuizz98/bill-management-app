@@ -1,6 +1,7 @@
 import BillMenu from "../components/BillMenu";
 import { useState, useEffect } from "react";
-
+import TopNav from "../components/TopNav";
+import Footer from "../components/Footer";
 interface Ad {
   imgSrc: string;
   link: string;
@@ -27,6 +28,7 @@ export default function Bills() {
 
   return (
     <>
+      <TopNav />
       <main>
         <div className="w-full max-w-[390px] p-[15px] m-auto xl:flex xl:flex-row  xl:max-w-[1280px]  gap-10">
           <div className="xl:basis-3/4 xl:border-[0.5px]  xl:border-[#EAECF0] xl:rounded-[12px] xl:p-[48px]">
@@ -57,6 +59,7 @@ export default function Bills() {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 }
