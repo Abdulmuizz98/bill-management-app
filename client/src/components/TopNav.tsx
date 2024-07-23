@@ -6,6 +6,8 @@ import { IoCartOutline } from "react-icons/io5";
 import { TfiHeart } from "react-icons/tfi";
 import { SlMenu } from "react-icons/sl";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useAppSelector } from "../store/hooks";
 
 interface INavOption {
   text: string;
@@ -18,6 +20,7 @@ const TopNav: React.FC = () => {
   const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const cartItems = useAppSelector((state) => state.cart.cartItems);
 
   // Define your nav options here
   const navOptions: INavOption[] = [
@@ -230,7 +233,7 @@ const TopNav: React.FC = () => {
             <IoCartOutline size={20} />
             <span>My cart</span>
             <div className="bg-white w-[20px] h-[20px] rounded-[50%] flex items-center justify-center text-[10px] text-purple font-[900]">
-              2
+              {cartItems.length}
             </div>
           </button>
         </div>

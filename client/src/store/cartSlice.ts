@@ -214,6 +214,10 @@ const cartSlice = createSlice({
       .addCase(getCart.fulfilled, (state, action) => {
         state.loading = false;
         state.cartItems = action.payload.cart;
+        state.total = state.cartItems.reduce(
+          (acc, item) => acc + item.amount,
+          0
+        );
       })
       .addCase(getCart.rejected, (state, action) => {
         state.loading = false;
