@@ -14,11 +14,9 @@ interface Transaction {
   category: "airtime" | "data";
 }
 
-const serviceHost = process.env.SERVICE_HOST || "";
+const BASE_URL = process.env.SERVICE_BASE_URL || "";
 
-const transactionQueue = new Bull("transaction", {
-  redis: "localhost:6379",
-});
+const transactionQueue = new Bull("transaction");
 
 async function queueTransactions(transactions: Transaction[]) {
   transactions.forEach((transaction) => {
@@ -29,42 +27,38 @@ async function queueTransactions(transactions: Transaction[]) {
 // TODO: Implement rety & refund after max retries logic
 // TODO: Implement Notification Service to notify on status of transactions.
 // TODO: Possibly save transaction records in a db
-async function processTransactionQueue() {
-  transactionQueue.process(async (job: Job) => {
-    const { data } = job;
-    console.log("Processing transaction: ", data);
+async function processTransactionQueue(job: Job) {
+  const { data } = job;
+  console.log("Processing transaction: ", data);
 
-    const { category, provider, amount, productId, customerRef, phone } =
-      job.data;
-    console.log(`Processing ${category} transaction for: `, customerRef);
+  const { category, provider, amount, productId, customerRef, phone } =
+    job.data;
+  console.log(`Processing ${category} transaction for: `, customerRef);
 
-    let isSuccess = false;
-    switch (category) {
-      case "airtime":
-      case "data":
-        isSuccess = await vendAirtimeOrData({
-          category,
-          amount,
-          productId,
-          customerRef,
-          phone,
-          provider,
-        });
-        break;
-      default:
-        break;
-    }
+  let isSuccess = false;
+  switch (category) {
+    case "airtime":
+    case "data":
+      isSuccess = await vendAirtimeOrData({
+        category,
+        amount,
+        productId,
+        customerRef,
+        phone,
+        provider,
+      });
+      break;
+    default:
+      break;
+  }
 
-    if (isSuccess) {
-      console.log(
-        `Transaction ${category} - ${customerRef} successfully completed`
-      );
-    } else {
-      console.log(
-        `Transaction ${category} - ${customerRef} failed... Retrying`
-      );
-    }
-  });
+  if (isSuccess) {
+    console.log(
+      `Transaction ${category} - ${customerRef} successfully completed`
+    );
+  } else {
+    console.log(`Transaction ${category} - ${customerRef} failed... Retrying`);
+  }
 }
 transactionQueue.process(processTransactionQueue);
 
@@ -77,7 +71,7 @@ async function vendAirtimeOrData({
   phone,
 }: Transaction) {
   const route = category === "airtime" ? "topup" : "datatopup";
-  const endpoint = `https://${serviceHost}/api/${route}/exec/${phone}`;
+  const endpoint = `${BASE_URL}/api/${route}/exec/${phone}`;
 
   const payload = {
     product_id: productId,
@@ -123,32 +117,33 @@ billsRouter.post("/queue-transactions", async (req: Request, res: Response) => {
 });
 
 // Gateway to get airtime info for a msisdn.
-billsRouter.post(
-  "/airtime-info/:phone",
-  async (req: Request, res: Response) => {
-    const { phone } = req.params;
-    const endpoint = `https://${serviceHost}/api/topup/info/${phone}`;
-    const authHeader = req.headers["authorization"];
+billsRouter.get("/airtime-info/:phone", async (req: Request, res: Response) => {
+  console.log("got here");
+  const { phone } = req.params;
+  const endpoint = `${BASE_URL}/api/topup/info/${phone}`;
+  const authHeader = req.headers["authorization"];
 
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: authHeader,
-    };
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: authHeader,
+  };
 
-    try {
-      const response = await axios.get(endpoint, { headers });
-      res.status(200).json(response.data);
-    } catch (error: any) {
-      console.error("Error getting phone info:");
-      res.status(error.response?.status || 400).json({ error: error.message });
-    }
+  console.log(headers);
+  console.log(endpoint);
+
+  try {
+    const response = await axios.get(endpoint, { headers });
+    res.status(200).json(response.data);
+  } catch (error: any) {
+    console.error("Error getting phone info: ", error.message);
+    res.status(error.response?.status || 400).json({ error: error.message });
   }
-);
+});
 
 // Gateway to get data info for a msisdn.
-billsRouter.post("/data-info/:phone", async (req: Request, res: Response) => {
+billsRouter.get("/data-info/:phone", async (req: Request, res: Response) => {
   const { phone } = req.params;
-  const endpoint = `https://${serviceHost}/api/datatopup/info/${phone}`;
+  const endpoint = `${BASE_URL}/api/datatopup/info/${phone}`;
   const authHeader = req.headers["authorization"];
 
   const headers = {

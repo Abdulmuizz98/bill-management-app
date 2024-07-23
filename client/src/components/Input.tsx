@@ -7,6 +7,8 @@ interface InputProps {
   required: boolean;
   title: string;
   label: string;
+  field: string | number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Input({
@@ -16,8 +18,10 @@ export default function Input({
   required,
   title,
   label,
+  field,
+  onChange,
 }: InputProps) {
-  const [field, setField] = useState("");
+  // const [field, setField] = useState("");
 
   return (
     <label htmlFor={id} className={`w-full h-[70px] relative flex`}>
@@ -31,7 +35,7 @@ export default function Input({
         name={name}
         required={required}
         value={field}
-        onChange={(e) => setField(e.target.value)}
+        onChange={onChange}
       />
       <span
         className={`absolute top-1/2 left-[24px] translate-y-[-50%] peer-focus:translate-y-[-100%] ${

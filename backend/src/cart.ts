@@ -95,4 +95,17 @@ cartRouter.delete("/:cartItemId", async (req: CustomRequest, res: Response) => {
   }
 });
 
+// Remove cart (useful on checkout)
+cartRouter.delete("/", async (req: CustomRequest, res: Response) => {
+  const { uid: userId } = req.user;
+
+  try {
+    await Cart.deleteOne({ userId });
+
+    res.status(204).json({ message: "Cart was removed successfully" }); // Return a successful response with no content
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to remove cart" }); // Return an error response
+  }
+});
 export default cartRouter;

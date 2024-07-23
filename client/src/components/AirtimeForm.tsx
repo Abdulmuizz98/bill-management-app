@@ -1,17 +1,77 @@
 import { PrimaryBtn, SecondaryBtn } from "./Button";
 import Input from "./Input";
 import { ProviderRadio } from "./ProviderRadio";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addCartItem } from "../store/cartSlice";
+import { CartItem } from "../types";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function AirtimeForm() {
   const [provider, setProvider] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  console.log("Phone: ", phone);
+  console.log("Amount: ", amount);
+  console.log("Provider: ", provider);
+  console.log("Email: ", email);
+
+  function debounce(func: (value: string | undefined) => void, wait: number) {
+    let timeout: number;
+    return (value: string | undefined) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        func(value);
+      }, wait);
+    };
   }
+
+  const cartItems = useAppSelector((state) => state.cart.cartItems);
+  const dispatch = useAppDispatch();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  async function handleSubmit(e) {
+    setLoading(true);
+    e.preventDefault();
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/bills/airtime-info/${phone}`
+      );
+      const data = await response.data;
+      console.log(data);
+      const operator = data.opts?.operator;
+      const productId = data.products?.[0]?.product_id;
+
+      if (operator !== provider)
+        throw new Error(
+          `The phone number provided is not a(an) ${provider} number; select ${operator} as provider.`
+        );
+
+      const payload: CartItem = {
+        phone,
+        amount: parseInt(amount, 10),
+        category: "airtime",
+        provider,
+        productId,
+        date: new Date().getTime(),
+      };
+      await dispatch(addCartItem(payload));
+      navigate("/checkout");
+    } catch (e) {
+      console.log(e);
+      // TODO: Toast error message
+      return;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {}, [phone, provider]);
 
   return (
     <form
@@ -25,39 +85,50 @@ export default function AirtimeForm() {
         <p className="text-[14px] xl:text-[16px]">Please enter your details.</p>
       </div>
 
-      <div className="space-y-[24px] w-full">
-        <ProviderRadio />
-        <Input
-          name="phone"
-          id="phone"
-          type="tel"
-          title="Enter your eleven digit phone number."
-          required={true}
-          label="Phone Number"
-        />
-        <Input
-          name="amount"
-          id="amount"
-          type="number"
-          title="Enter the money's worth of airtime you want to buy."
-          required={true}
-          label="Amount"
-        />
+      <fieldset disabled={loading}>
+        <div className="space-y-[24px] w-full">
+          <ProviderRadio
+            field={provider}
+            onChange={(e) => setProvider(e.target.value)}
+          />
+          <Input
+            name="phone"
+            id="phone"
+            type="tel"
+            title="Enter your eleven digit phone number."
+            required={true}
+            label="Phone Number"
+            field={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <Input
+            name="amount"
+            id="amount"
+            type="text"
+            title="Enter the money's worth of airtime you want to buy."
+            required={true}
+            label="Amount"
+            field={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
 
-        <Input
-          name="email"
-          id="email"
-          type="email"
-          title="Optionally provide an email address."
-          required={false}
-          label="Email Address"
-        />
-      </div>
+          <Input
+            name="email"
+            id="email"
+            type="email"
+            title="Optionally provide an email address."
+            required={false}
+            label="Email Address"
+            field={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-      <div className="space-y-[12px] flex flex-col">
-        <PrimaryBtn title="Add to cart" type="submit" />
-        <SecondaryBtn title="Proceed to checkout" type="button" />
-      </div>
+        <div className="space-y-[12px] flex flex-col">
+          <PrimaryBtn title="Add to cart" type="submit" />
+          <SecondaryBtn title="Proceed to checkout" type="button" />
+        </div>
+      </fieldset>
     </form>
   );
 }

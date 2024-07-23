@@ -10,7 +10,13 @@ import cartRouter from "./cart";
 import { CustomRequest } from "./types";
 
 const app: Express = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: "*",
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -56,7 +62,9 @@ async function ensureServiceAuthenticated(
   res: Response,
   next: NextFunction
 ) {
+  console.log("got here first");
   const payload = await getAuthPayload();
+  console.log("got here first");
 
   if (!payload)
     return res.status(403).json({
@@ -71,6 +79,10 @@ async function ensureServiceAuthenticated(
 // Plugin other routers
 app.use("/bills", ensureServiceAuthenticated, billsRouter);
 app.use("/cart", authenticateUser, cartRouter);
+
+app.get("/status", (req: Request, res: Response) => {
+  res.status(200).json({ status: "Server is up and running" });
+});
 
 // Handle requests to unknown paths
 app.use((req: Request, res: Response) => {

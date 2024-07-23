@@ -24,7 +24,7 @@ export const providers = [
   },
   {
     name: "Glo",
-    value: "Glo",
+    value: "Globacom",
     icon: GloIcon,
     checked: false,
   },

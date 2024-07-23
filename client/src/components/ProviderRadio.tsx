@@ -2,7 +2,12 @@ import { providers } from "../data/providers";
 import { BmCheck } from "./Icon";
 import { useRef, useState } from "react";
 
-export const ProviderRadio = () => {
+interface ProviderRadioProps {
+  field: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const ProviderRadio = ({ field, onChange }: ProviderRadioProps) => {
   let providerRef = useRef<HTMLDivElement | null>(null);
   let choiceRef = useRef<HTMLLabelElement | null>(null);
 
@@ -38,6 +43,8 @@ export const ProviderRadio = () => {
               id="provider"
               name="provider"
               value={value}
+              checked={field === value}
+              onChange={onChange}
               className="absolute"
             />
             <img src={icon} alt={name} className=" w-full " />
