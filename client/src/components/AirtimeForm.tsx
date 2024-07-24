@@ -21,16 +21,6 @@ export default function AirtimeForm() {
   console.log("Provider: ", provider);
   console.log("Email: ", email);
 
-  function debounce(func: (value: string | undefined) => void, wait: number) {
-    let timeout: number;
-    return (value: string | undefined) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        func(value);
-      }, wait);
-    };
-  }
-
   // const cartItems = useAppSelector((state) => state.cart.cartItems);
   const dispatch = useAppDispatch();
   const BASE_URL = import.meta.env.VITE_BASE_URL;

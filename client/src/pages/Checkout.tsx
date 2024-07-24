@@ -70,6 +70,7 @@ function prepareTransactionFromCart(
 
   return transactions;
 }
+type PaymentMethod = "paystack" | "bnpl" | "link";
 
 export default function Checkout() {
   const cartItems = useAppSelector((state) => state.cart.cartItems);
@@ -80,7 +81,7 @@ export default function Checkout() {
   const gatewayFee = 0;
   const publicKey = import.meta.env.VITE_PS_KEY;
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+  const [payMethod, setPayMethod] = useState<PaymentMethod>("paystack");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const dispatch = useAppDispatch();
@@ -135,13 +136,13 @@ export default function Checkout() {
       email: email,
       amount: total * 100,
       onSuccess: queueTransactions,
-      onLoad: (response) => {
+      onLoad: (response: any) => {
         console.log("onLoad: ", response);
       },
       onCancel: () => {
         console.log("onCancel");
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.log("Error: ", error.message);
       },
     });
@@ -154,7 +155,22 @@ export default function Checkout() {
     // To prevent unwanted behavior (Payment then you can't access backend service).
     // It also ensures we can clear cart items after transactions have taken place.
     await dispatch(getCart());
-    handlePaywithPaystack();
+
+    switch (payMethod) {
+      case "paystack":
+        handlePaywithPaystack();
+        break;
+      case "bnpl":
+        console.log("Payment method not available");
+        //TODO: Toastify here
+        break;
+      case "link":
+        console.log("Payment method not available");
+        //TODO: Toastify here
+        break;
+      default:
+        break;
+    }
   };
 
   const handleCancel = (e: any) => {
@@ -168,6 +184,10 @@ export default function Checkout() {
     if (cartItemId) {
       await dispatch(removeCartItem(cartItemId));
     }
+  }
+
+  async function handlePayMethodChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPayMethod(e.target.value as PaymentMethod);
   }
 
   // async function handleEditCartItem(
@@ -300,7 +320,15 @@ export default function Checkout() {
                     Pay with Paystack
                   </h3>
                 </label>
-                <input required type="radio" name="payment" id="paystack" />
+                <input
+                  required
+                  value="paystack"
+                  checked={payMethod === "paystack"}
+                  onChange={handlePayMethodChange}
+                  type="radio"
+                  name="payment"
+                  id="paystack"
+                />
               </div>
               <div className="flex rounded-[8px] border-[1px] border-[#EAECF0] p-4">
                 <label
@@ -314,7 +342,15 @@ export default function Checkout() {
                     Enjoy 6-Month Installments with Zero Interest
                   </span>
                 </label>
-                <input required type="radio" name="payment" id="pay" />
+                <input
+                  value="bnpl"
+                  checked={payMethod === "bnpl"}
+                  onChange={handlePayMethodChange}
+                  required
+                  type="radio"
+                  name="payment"
+                  id="pay"
+                />
               </div>
               <div className="flex rounded-[8px] border-[1px] border-[#EAECF0] p-4">
                 <label
@@ -328,7 +364,15 @@ export default function Checkout() {
                     Simply send them a link, and let the generosity flow!
                   </span>
                 </label>
-                <input required type="radio" name="payment" id="generate" />
+                <input
+                  value="link"
+                  checked={payMethod === "link"}
+                  onChange={handlePayMethodChange}
+                  required
+                  type="radio"
+                  name="payment"
+                  id="generate"
+                />
               </div>
             </div>
           </div>
