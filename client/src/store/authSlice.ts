@@ -80,6 +80,7 @@ export const register = createAsyncThunk<
       token: await userCredential.user.getIdToken(),
     };
     console.log("user: ", user);
+
     return user;
   } catch (err: any) {
     const payload = {
@@ -134,6 +135,7 @@ type StringOrUndef = string | undefined;
 
 interface AuthStateInterface {
   isAuthenticated: boolean;
+  redirectToLogin: boolean;
   loading: boolean;
   user: UserOrNull;
   error: StringOrUndef;
@@ -147,6 +149,7 @@ const user =
 const initialState: AuthStateInterface = {
   loading: false,
   user,
+  redirectToLogin: false,
   isAuthenticated: user ? true : false,
   error: undefined,
 };
@@ -163,6 +166,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.isAuthenticated = false;
       state.user = null;
+      state.redirectToLogin = true;
     },
     getUser(state) {
       const user = localStorage.getItem("bma-user");
@@ -170,6 +174,12 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = JSON.parse(user);
       }
+    },
+    toggleOnRedirectToLogin(state) {
+      state.redirectToLogin = true;
+    },
+    toggleOffRedirectToLogin(state) {
+      state.redirectToLogin = false;
     },
   },
   extraReducers: (builder) => {
@@ -209,5 +219,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetError, logout, getUser } = authSlice.actions;
+export const {
+  resetError,
+  logout,
+  getUser,
+  toggleOnRedirectToLogin,
+  toggleOffRedirectToLogin,
+} = authSlice.actions;
 export default authSlice;

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate } from "react-router-dom";
-import { register } from "../store/authSlice";
+import { register, toggleOffRedirectToLogin } from "../store/authSlice";
 import { toast } from "react-toastify";
 
 export default function SignUp() {
@@ -184,6 +184,7 @@ export default function SignUp() {
                 <Link
                   className="font-medium text-primary-600 hover:underline "
                   to={"/"}
+                  onClick={() => dispatch(toggleOffRedirectToLogin())}
                 >
                   Continue without signin up.
                 </Link>

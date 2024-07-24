@@ -71,8 +71,6 @@ export default function AirtimeForm() {
     }
   }
 
-  useEffect(() => {}, [phone, provider]);
-
   return (
     <form
       className="space-y-[32px] w-full max-w-[400px]"

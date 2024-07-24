@@ -20,6 +20,7 @@ const ads: Ad[] = [
 export default function Bills() {
   const [adIndex, setAdIndex] = useState(0);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const redirectToLogin = useAppSelector((state) => state.auth.redirectToLogin);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -33,11 +34,12 @@ export default function Bills() {
     };
   }, []);
 
+  console.log("adIndex: ", adIndex);
   useEffect(() => {
     dispatch(getCart());
 
     // Fix for redirect to sign in if user is logged out.
-    if (!isAuthenticated) {
+    if (!isAuthenticated && redirectToLogin) {
       navigate("/signin");
     }
   }, [isAuthenticated]);

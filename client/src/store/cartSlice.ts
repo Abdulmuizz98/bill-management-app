@@ -23,7 +23,7 @@ export const getCart = createAsyncThunk(
         const response = await axios.get(endpoint, getConfig(user.token));
         return { cart: response.data };
       } catch (err: any) {
-        if (err.response.status === 403) {
+        if (err.response.status === 401 || err.response.status === 403) {
           dispatch(logout());
         }
         const payload = {
@@ -57,9 +57,10 @@ export const addCartItem = createAsyncThunk(
           cartItem,
           getConfig(user.token)
         );
+        console.log(response.data);
         return { cartItem: response.data };
       } catch (err: any) {
-        if (err.response.status === 403) {
+        if (err.response.status === 401 || err.response.status === 403) {
           dispatch(logout());
         }
         const payload = {
@@ -98,7 +99,7 @@ export const updateCartItem = createAsyncThunk(
         );
         return { updatedItem: response.data };
       } catch (err: any) {
-        if (err.response.status === 403) {
+        if (err.response.status === 401 || err.response.status === 403) {
           dispatch(logout());
         }
         const payload = {
@@ -142,7 +143,7 @@ export const removeCartItem = createAsyncThunk(
         );
         return { removedItem: response.data };
       } catch (err: any) {
-        if (err.response.status === 403) {
+        if (err.response.status === 401 || err.response.status === 403) {
           dispatch(logout());
         }
         const payload = {
@@ -171,7 +172,7 @@ export const checkout = createAsyncThunk(
         await axios.delete(`${endpoint}`, getConfig(user.token));
         return;
       } catch (err: any) {
-        if (err.response.status === 403) {
+        if (err.response.status === 401 || err.response.status === 403) {
           dispatch(logout());
         }
         const payload = {

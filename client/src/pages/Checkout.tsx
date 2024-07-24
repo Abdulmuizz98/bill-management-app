@@ -75,6 +75,7 @@ export default function Checkout() {
   const cartItems = useAppSelector((state) => state.cart.cartItems);
   const total = useAppSelector((state) => state.cart.total);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const redirectToLogin = useAppSelector((state) => state.auth.redirectToLogin);
   const navigate = useNavigate();
   const gatewayFee = 0;
   const publicKey = import.meta.env.VITE_PS_KEY;
@@ -90,7 +91,7 @@ export default function Checkout() {
     dispatch(getCart());
 
     // Fix for redirect to sign in if user is logged out.
-    if (!isAuthenticated) {
+    if (!isAuthenticated && redirectToLogin) {
       navigate("/signin");
     }
   }, [isAuthenticated]);

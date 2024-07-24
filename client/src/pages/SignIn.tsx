@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { login } from "../store/authSlice";
+import { toggleOffRedirectToLogin } from "../store/authSlice";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -114,6 +115,7 @@ export default function SignIn() {
                 <Link
                   className="font-medium text-primary-600 hover:underline "
                   to={"/"}
+                  onClick={() => dispatch(toggleOffRedirectToLogin())}
                 >
                   Continue without signin in.
                 </Link>
