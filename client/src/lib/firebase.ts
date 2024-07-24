@@ -1,9 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  connectAuthEmulator,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 // import { getAnalytics } from "firebase/analytics";
 // import { getFirestore } from "firebase/firestore";
 // import { getStorage } from "firebase/storage";

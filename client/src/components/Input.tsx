@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface InputProps {
   name: string;
   id: string;

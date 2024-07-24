@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { ERROR, notify } from "./notificationSlice";
 import { AppDispatch } from ".";
 import { auth } from "../lib/firebase";

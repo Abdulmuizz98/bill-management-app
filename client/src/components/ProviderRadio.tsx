@@ -1,6 +1,6 @@
 import { providers } from "../data/providers";
 import { BmCheck } from "./Icon";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 interface ProviderRadioProps {
   field: string;

@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { getAuthPayload } from "./auth";
 import axios from "axios";
-import Bull, { Job } from "bull";
+import Bull, { Job, QueueOptions } from "bull";
 
 const billsRouter = express.Router();
 
@@ -16,7 +16,16 @@ interface Transaction {
 
 const BASE_URL = process.env.SERVICE_BASE_URL || "";
 
-const transactionQueue = new Bull("transaction");
+const options: QueueOptions = {
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+  },
+};
+
+console.log(options.redis);
+
+const transactionQueue = new Bull("transaction", options);
 
 async function queueTransactions(transactions: Transaction[]) {
   transactions.forEach((transaction) => {
