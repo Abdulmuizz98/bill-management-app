@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  orchestrator:
+    image: oraio/billproService:latest
+    networks:
+      - ingress
+    ports:
+      - 8000
+    env_file:
+      - "$PWD/backend/.env"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        ingress.host: topup.billpro.oraio.tech
+        ingress.port: 8000
+        ingress.virtual_proto: http
+        ingress.ssl: enable
+        ingress.ssl_redirect: enable
+
+networks:
+  ingress:
+    external: true
+    name: ingress-routing

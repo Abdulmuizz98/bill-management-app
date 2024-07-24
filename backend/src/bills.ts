@@ -60,6 +60,7 @@ async function processTransactionQueue(job: Job) {
     console.log(`Transaction ${category} - ${customerRef} failed... Retrying`);
   }
 }
+
 transactionQueue.process(processTransactionQueue);
 
 // Call API to vend airtime or data
@@ -118,7 +119,6 @@ billsRouter.post("/queue-transactions", async (req: Request, res: Response) => {
 
 // Gateway to get airtime info for a msisdn.
 billsRouter.get("/airtime-info/:phone", async (req: Request, res: Response) => {
-  console.log("got here");
   const { phone } = req.params;
   const endpoint = `${BASE_URL}/api/topup/info/${phone}`;
   const authHeader = req.headers["authorization"];
@@ -127,9 +127,6 @@ billsRouter.get("/airtime-info/:phone", async (req: Request, res: Response) => {
     "Content-Type": "application/json",
     Authorization: authHeader,
   };
-
-  console.log(headers);
-  console.log(endpoint);
 
   try {
     const response = await axios.get(endpoint, { headers });
@@ -155,7 +152,7 @@ billsRouter.get("/data-info/:phone", async (req: Request, res: Response) => {
     const response = await axios.get(endpoint, { headers });
     res.status(200).json(response.data);
   } catch (error: any) {
-    console.error("Error getting data info:");
+    console.error("Error getting data info: ", error.message);
     res.status(error.response?.status || 400).json({ error: error.message });
   }
 });

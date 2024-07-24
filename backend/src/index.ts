@@ -28,13 +28,9 @@ async function authenticateUser(
   res: Response,
   next: NextFunction
 ) {
-  console.log("Tried to authenticate...");
-
   // Check if user is an authenticated user or not. If authenticated validate auth token.
-  const authHeader = req.headers["authorization"];
   const idToken = req.headers["authorization"]?.split("Bearer ")[1];
 
-  console.log("idToken: ", idToken);
   if (!idToken) {
     return res.status(401).json({
       error: "Unauthorized: Authorization header with Bearer token is required",
@@ -44,16 +40,12 @@ async function authenticateUser(
   try {
     let userProfile = null;
     // Verify Firebase ID token; then fetch user profile
-    console.log("Trying to verify idTOken");
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     userProfile = await admin.auth().getUser(decodedToken.uid);
 
     req.user = userProfile; // Attach full user profile to request object
-    console.log("User profile: ", userProfile);
-
     next();
   } catch (error: any) {
-    console.log("error in verifying oken - " + error.message);
     return res.status(403).json({ error: "Forbidden: Invalid token key" });
   }
 }
@@ -64,9 +56,7 @@ async function ensureServiceAuthenticated(
   res: Response,
   next: NextFunction
 ) {
-  console.log("got here first");
   const payload = await getAuthPayload();
-  console.log("got here first");
 
   if (!payload)
     return res.status(403).json({

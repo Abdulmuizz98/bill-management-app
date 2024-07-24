@@ -9,12 +9,12 @@ import { addCartItem } from "../store/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { CartItem } from "../types";
 import { useAppDispatch } from "../store/hooks";
+import { toast } from "react-toastify";
 
 export default function DataForm() {
   const [dataPlans, setDataPlans] = useState<DataPlan[]>([]);
   const [provider, setProvider] = useState("");
   const [plan, setPlan] = useState<DataPlan | null>(null);
-  // const [planStr, setPlanStr] = useState(plan?.name || "");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -74,8 +74,7 @@ export default function DataForm() {
           }
         })
         .catch((err: any) => {
-          console.log(err);
-          // TODO: Toastify error here.
+          toast.error(err.message);
         });
     }, 5000);
     debouncePhoneAndProvider();
@@ -106,9 +105,8 @@ export default function DataForm() {
       };
       await dispatch(addCartItem(payload));
       navigate("/checkout");
-    } catch (e) {
-      console.log(e);
-      // TODO: Toast error message
+    } catch (e: any) {
+      toast.error(e.message);
       return;
     } finally {
       setLoading(false);

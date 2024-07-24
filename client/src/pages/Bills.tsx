@@ -12,9 +12,9 @@ interface Ad {
 }
 
 const ads: Ad[] = [
-  { imgSrc: `https://picsum.photos/seed/picsum1/200/200`, link: "#" },
-  { imgSrc: `https://picsum.photos/seed/picsum2/200/200`, link: "#" },
-  { imgSrc: `https://picsum.photos/seed/picsum3/200/200`, link: "#" },
+  { imgSrc: `https://picsum.photos/200/200`, link: "#" },
+  { imgSrc: `https://picsum.photos/200/200`, link: "#" },
+  { imgSrc: `https://picsum.photos/200/200`, link: "#" },
 ];
 
 export default function Bills() {
@@ -25,12 +25,12 @@ export default function Bills() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
+    const timerId = setInterval(() => {
       setAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
     }, 5000); // Change ad after 5 seconds
 
     return () => {
-      clearTimeout(timerId);
+      clearInterval(timerId);
     };
   }, []);
 
@@ -59,22 +59,31 @@ export default function Bills() {
             <BillMenu />
           </div>
 
-          <div className="hidden xl:flex xl:object-contain xl:flex-col gap-y-10 xl:basis-1/4 ">
-            <a href={ads[adIndex].link}>
-              <img
-                className="w-full rounded-md xl:h-[600px]"
-                alt="ad one"
-                src={ads[adIndex].imgSrc}
-              ></img>
-            </a>
-            <a href={ads[adIndex].link}>
-              <img
-                className="w-full rounded-md xl:h-[200px]"
-                alt="ad one"
-                src={ads[adIndex].imgSrc}
-              ></img>
-            </a>
-          </div>
+          {ads.map((ad, index) => (
+            <div
+              className={`hidden ${
+                adIndex === index &&
+                "xl:flex xl:object-contain xl:flex-col gap-y-10 xl:basis-1/4 "
+              }`}
+            >
+              <>
+                <a href={ad.link}>
+                  <img
+                    className="w-full rounded-md xl:h-[600px]"
+                    alt="ad one"
+                    src={ad.imgSrc}
+                  ></img>
+                </a>
+                <a href={ad.link}>
+                  <img
+                    className="w-full rounded-md xl:h-[200px]"
+                    alt="ad one"
+                    src={ad.imgSrc}
+                  ></img>
+                </a>
+              </>
+            </div>
+          ))}
         </div>
       </main>
       <NewsLetterForm />

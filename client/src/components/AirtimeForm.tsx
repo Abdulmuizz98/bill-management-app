@@ -7,6 +7,7 @@ import { addCartItem } from "../store/cartSlice";
 import { CartItem } from "../types";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function AirtimeForm() {
   const [provider, setProvider] = useState("");
@@ -21,10 +22,9 @@ export default function AirtimeForm() {
   console.log("Provider: ", provider);
   console.log("Email: ", email);
 
-  // const cartItems = useAppSelector((state) => state.cart.cartItems);
   const dispatch = useAppDispatch();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     setLoading(true);
     e.preventDefault();
 
@@ -52,9 +52,9 @@ export default function AirtimeForm() {
       };
       await dispatch(addCartItem(payload));
       navigate("/checkout");
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
-      // TODO: Toast error message
+      toast.error(e.message);
       return;
     } finally {
       setLoading(false);

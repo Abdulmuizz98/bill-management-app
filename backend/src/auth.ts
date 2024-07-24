@@ -13,10 +13,10 @@ export async function getAuthPayload() {
       password: process.env.SERVICE_PASSWORD,
     };
     try {
-      console.log("trying to fetch auth");
+      console.log("Trying to authenticate third party service...");
       const response = await axios.post(endpoint, payload);
       const data = await response.data;
-      console.log(data);
+      console.log("Successfully authenticated Service");
       authPayload = data;
     } catch (error) {
       console.error("Error fetching auth payload: ", error);

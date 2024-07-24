@@ -7,7 +7,7 @@ const connection = connect(dbUri);
 
 // Seed the database after connection is established
 mongoose.connection.once("connected", async () => {
-  console.log("just connected to mongo");
+  console.log("Connected to mongo");
   try {
     // Check if the collection exists
     const exists = await Cart.countDocuments();
@@ -19,7 +19,7 @@ mongoose.connection.once("connected", async () => {
   } catch (error) {
     console.error("Error seeding database:", error);
   }
-  console.log("Done here in seeding!");
+  console.log("Seeding Complete");
 });
 
 export default connection;

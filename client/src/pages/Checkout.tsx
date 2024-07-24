@@ -12,6 +12,7 @@ import Footer from "../components/Footer";
 import NewsLetterForm from "../components/NewsLetterForm";
 import Paystack from "@paystack/inline-js";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import {
   BmAirtime,
@@ -112,21 +113,19 @@ export default function Checkout() {
     try {
       const transactions = prepareTransactionFromCart(cartItems, transId);
       const payload = { transactions: transactions };
-      console.log("Payload: ", payload);
       axios
         .post(`${BASE_URL}/bills/queue-transactions`, payload)
         .then((response) => response.data)
         .then((data) => {
-          console.log(data.message);
-          // TODO: Toastify here
+          toast.success("Transactions queued successfully: ", data.message);
           setOpen(true);
           dispatch(checkout());
         });
     } catch (err: any) {
-      console.log(err);
-      console.log("Failed to queue transactions.");
-      // TODO: Toastify here
-      // Really dont know what to do when it fails here... maybe refund
+      toast.error("Failed to queue transactions: ", err.message);
+      // * Important: Made payment but we didn't serve them.
+      // * This is where support comes in. Customer can notify failed transactions and support will initiate.
+      // * Possible walk-around maybe integrating the payment on the server (pelling for verification to continue).
     }
   }
   function handlePaywithPaystack() {
@@ -137,13 +136,13 @@ export default function Checkout() {
       amount: total * 100,
       onSuccess: queueTransactions,
       onLoad: (response: any) => {
-        console.log("onLoad: ", response);
+        toast.success("Payment loading...");
       },
       onCancel: () => {
-        console.log("onCancel");
+        toast.warn("Payment cancelled");
       },
       onError: (error: any) => {
-        console.log("Error: ", error.message);
+        toast.error("Payment failed: ", error.message);
       },
     });
   }
@@ -189,12 +188,6 @@ export default function Checkout() {
   async function handlePayMethodChange(e: React.ChangeEvent<HTMLInputElement>) {
     setPayMethod(e.target.value as PaymentMethod);
   }
-
-  // async function handleEditCartItem(
-  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  // ) {
-  //   // await dispatch(updateCartItem())
-  // }
 
   return (
     <>
