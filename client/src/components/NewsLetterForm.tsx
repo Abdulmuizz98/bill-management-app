@@ -2,7 +2,7 @@ import { HiOutlineMail } from "react-icons/hi";
 
 const NewsLetterForm = () => {
   return (
-    <div className="hidden md:flex bg-[#f9fafb] flex-col gap-4 font-sans items-center py-[60px] px-[20px]">
+    <div className="hidden md:flex bg-[#f9fafb] flex-col gap-4 font-sans items-center py-[60px] px-[20px] xl:max-w-[1280px] xl:m-auto xl:px-0">
       <h3 className="text-[24px] text-[#101828] font-[900]">Newsletter</h3>
       <span className="text-center text-[14px] text-[#475467] leading-[20px] whitespace-pre-line">
         {

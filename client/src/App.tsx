@@ -11,12 +11,12 @@ import Bills from "./pages/Bills";
 
 function App() {
   const dispatch = useAppDispatch();
-  // const auth = useAppSelector((state) => state.auth);
-  // const { isAuthenticated, user } = auth;
+  const auth = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = auth;
 
   useEffect(() => {
     dispatch(getCart());
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <BrowserRouter>

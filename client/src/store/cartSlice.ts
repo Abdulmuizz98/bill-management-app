@@ -5,7 +5,8 @@ import { getConfig } from "./authSlice";
 import { logout } from "./authSlice";
 import { CartItem } from "../types";
 
-const endpoint = "http://localhost:3000/cart";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const endpoint = `${BASE_URL}/cart`;
 
 export const getCart = createAsyncThunk(
   "cart/getCart",

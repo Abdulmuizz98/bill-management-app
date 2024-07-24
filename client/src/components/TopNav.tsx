@@ -6,8 +6,8 @@ import { IoCartOutline } from "react-icons/io5";
 import { TfiHeart } from "react-icons/tfi";
 import { SlMenu } from "react-icons/sl";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { logout } from "../store/authSlice";
 
 interface INavOption {
   text: string;
@@ -21,6 +21,8 @@ const TopNav: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const cartItems = useAppSelector((state) => state.cart.cartItems);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useAppDispatch();
 
   // Define your nav options here
   const navOptions: INavOption[] = [
@@ -77,6 +79,9 @@ const TopNav: React.FC = () => {
     setIsNavOpen(false);
   };
 
+  function handleSignOut() {
+    dispatch(logout());
+  }
   return (
     <nav className="">
       <div className="bg-white py-[20px] px-[20px] md:px-[80px] flex lg:gap-[50px] items-center justify-between lg:justify-between font-sans xl:max-w-[1280px] xl:m-auto xl:px-0">
@@ -98,20 +103,32 @@ const TopNav: React.FC = () => {
             </a>
           ))}
         </div>
+
         <div className=" hidden lg:flex flex-col md:flex-row gap-3">
-          <button
-            onClick={() => navigate("/signin")}
-            type="button"
-            className="md:flex-1 w-[140px] rounded-[40px] h-[48px] border-[1px] border-purple flex items-center justify-center text-[14px] text-purple font-[500] font-sans"
-          >
-            Sign in
-          </button>
-          <button
-            onClick={() => navigate("/signup")}
-            className="md:flex-1 w-[140px] rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans"
-          >
-            Create account
-          </button>
+          {!isAuthenticated ? (
+            <>
+              <button
+                onClick={() => navigate("/signin")}
+                type="button"
+                className="md:flex-1 w-[140px] rounded-[40px] h-[48px] border-[1px] border-purple flex items-center justify-center text-[14px] text-purple font-[500] font-sans"
+              >
+                Sign in
+              </button>
+              <button
+                onClick={() => navigate("/signup")}
+                className="md:flex-1 w-[140px] rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans"
+              >
+                Create account
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={handleSignOut}
+              className="md:flex-1 w-[140px] rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans"
+            >
+              Sign out
+            </button>
+          )}
         </div>
         <button
           onClick={() => setIsNavOpen(true)}
@@ -192,20 +209,32 @@ const TopNav: React.FC = () => {
             ))}
           </div>
           <div className=" flex flex-col gap-4 px-[20px] w-full">
-            <button
-              type="button"
-              onClick={() => navigate("/signin")}
-              className="w-full rounded-[40px] h-[48px] border-[1px] border-purple flex items-center justify-center text-[14px] text-purple font-[500] font-sans"
-            >
-              Sign in
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="w-full rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans"
-            >
-              Create account
-            </button>
+            {!isAuthenticated ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => navigate("/signin")}
+                  className="w-full rounded-[40px] h-[48px] border-[1px] border-purple flex items-center justify-center text-[14px] text-purple font-[500] font-sans"
+                >
+                  Sign in
+                </button>
+                <button
+                  onClick={() => navigate("/signup")}
+                  className="w-full rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans"
+                >
+                  Create account
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleSignOut}
+                className="w-full rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-sans"
+              >
+                Sign out
+              </button>
+            )}
           </div>
+          )
         </div>
       </div>
       <div className="border-[1px] border-[#EAECF0]">

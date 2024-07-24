@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { removeCartItem, updateCartItem } from "../store/cartSlice";
+import {
+  removeCartItem,
+  updateCartItem,
+  checkout,
+  getCart,
+} from "../store/cartSlice";
 import { useNavigate } from "react-router-dom";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
-// import PaystackPop from "@paystack/inline-js";
+import NewsLetterForm from "../components/NewsLetterForm";
+import Paystack from "@paystack/inline-js";
 import axios from "axios";
-import { PaystackButton } from "react-paystack";
 
 import {
   BmAirtime,
@@ -17,16 +22,6 @@ import {
   BmData,
 } from "../components/Icon";
 import PaymentSuccessModal from "../modals/payment-success-modal";
-
-// interface {
-//   "status": true,
-//   "message": "Authorization URL created",
-//   "data": {
-//     "authorization_url": "https://checkout.paystack.com/nkdks46nymizns7",
-//     "access_code": "nkdks46nymizns7",
-//     "reference": "nms6uvr1pl"
-//   }
-// }
 
 interface CartItem {
   productId: string;
@@ -79,6 +74,7 @@ function prepareTransactionFromCart(
 export default function Checkout() {
   const cartItems = useAppSelector((state) => state.cart.cartItems);
   const total = useAppSelector((state) => state.cart.total);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const navigate = useNavigate();
   const gatewayFee = 0;
   const publicKey = import.meta.env.VITE_PS_KEY;
@@ -90,6 +86,15 @@ export default function Checkout() {
 
   const [open, setOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    dispatch(getCart());
+
+    // Fix for redirect to sign in if user is logged out.
+    if (!isAuthenticated) {
+      navigate("/signin");
+    }
+  }, [isAuthenticated]);
+
   // {
   //   message: "Approved";
   //   redirecturl: "?trxref=T683485942684601&reference=T683485942684601";
@@ -99,42 +104,56 @@ export default function Checkout() {
   //   transaction: "4007339711";
   //   trxref: "T683485942684601";
   // }
-  const componentProps = {
-    email,
-    amount: total * 100,
-    metadata: {
-      fullName,
-    },
-    publicKey,
-    text: `Pay ₦ ${total}`,
-    onSuccess: (transaction) => {
-      const { trans: transId } = transaction;
-      try {
-        const transactions = prepareTransactionFromCart(cartItems, transId);
-        const payload = { transactions: transactions };
-        console.log("Payload: ", payload);
-        axios
-          .post(`${BASE_URL}/bills/queue-transactions`, payload)
-          .then((response) => response.data)
-          .then((data) => {
-            console.log(data.message);
-            setOpen(true);
-            // TODO: Toastify here
-          });
-      } catch (err: any) {
-        console.log(err);
-        console.log("Failed to queue transactions.");
-        // TODO: Toastify here
-        // Really dont know what to do when it fails here... maybe refund
-      }
-    },
-    onClose: () => alert("Wait! You need this oil, don't go!!!!"),
-  };
 
-  const handleSubmit = async (e: any) => {
+  function queueTransactions(transaction: any) {
+    const { trans: transId } = transaction;
+    try {
+      const transactions = prepareTransactionFromCart(cartItems, transId);
+      const payload = { transactions: transactions };
+      console.log("Payload: ", payload);
+      axios
+        .post(`${BASE_URL}/bills/queue-transactions`, payload)
+        .then((response) => response.data)
+        .then((data) => {
+          console.log(data.message);
+          // TODO: Toastify here
+          setOpen(true);
+          dispatch(checkout());
+        });
+    } catch (err: any) {
+      console.log(err);
+      console.log("Failed to queue transactions.");
+      // TODO: Toastify here
+      // Really dont know what to do when it fails here... maybe refund
+    }
+  }
+  function handlePaywithPaystack() {
+    const popup = new Paystack();
+    popup.checkout({
+      key: publicKey,
+      email: email,
+      amount: total * 100,
+      onSuccess: queueTransactions,
+      onLoad: (response) => {
+        console.log("onLoad: ", response);
+      },
+      onCancel: () => {
+        console.log("onCancel");
+      },
+      onError: (error) => {
+        console.log("Error: ", error.message);
+      },
+    });
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setOpen(true);
-    // await handlePaywithPaystack();
+
+    // Get cart items stylishly making sure you're token isn't expired
+    // To prevent unwanted behavior (Payment then you can't access backend service).
+    // It also ensures we can clear cart items after transactions have taken place.
+    await dispatch(getCart());
+    handlePaywithPaystack();
   };
 
   const handleCancel = (e: any) => {
@@ -150,17 +169,11 @@ export default function Checkout() {
     }
   }
 
-  async function handleEditCartItem(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    // await dispatch(updateCartItem())
-  }
-
-  function handleContinueShopping(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
-    navigate("/bills");
-  }
+  // async function handleEditCartItem(
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  // ) {
+  //   // await dispatch(updateCartItem())
+  // }
 
   return (
     <>
@@ -175,7 +188,7 @@ export default function Checkout() {
           </div>
           <div className="mt-6 w-full rounded-[12px] border-[1px] border-[#EAECF0] bg-white p-[10px] md:p-[25px] flex flex-col gap-6">
             <h5 className="text-[18px] text-[#101828] font-[900]">Your Cart</h5>
-            {cartItems.map((c, index) => (
+            {cartItems.map((c) => (
               <div
                 key={c._id ?? c.date}
                 className="flex items-center gap-3 rounded-[8px] border-[1px] border-[#F2F4F7] p-[12px]"
@@ -214,7 +227,7 @@ export default function Checkout() {
                   <button
                     type="button"
                     title="Edit cart item"
-                    onClick={handleEditCartItem}
+                    // onClick={handleEditCartItem}
                   >
                     <BmEdit size={18} />
                   </button>
@@ -224,7 +237,7 @@ export default function Checkout() {
             <button
               type="button"
               className="w-full font-[500] text-center text-[14px] text-purple border-none outline-none"
-              onClick={handleContinueShopping}
+              onClick={() => navigate("/bills")}
             >
               Continue Shopping
             </button>
@@ -343,15 +356,16 @@ export default function Checkout() {
             >
               Cancel
             </button>
-            <PaystackButton
-              className={
-                "md:flex-1 w-full rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-[500] font-sans"
-              }
-              {...componentProps}
-            />
+            <button
+              type="submit"
+              className="md:flex-1 w-full rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-[500] font-sans"
+            >
+              Pay ₦ {total}
+            </button>
           </div>
         </form>
       </main>
+      <NewsLetterForm />
       <Footer />
       {open && <PaymentSuccessModal setOpen={setOpen} />}
     </>

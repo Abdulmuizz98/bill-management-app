@@ -1,6 +1,24 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { login } from "../store/authSlice";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(login({ email, password }));
+  };
+  useEffect(() => {
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated]);
+
   return (
     <section className="">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -15,7 +33,7 @@ export default function SignIn() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-offblack md:text-2xl ">
               Sign in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="email"
@@ -27,9 +45,11 @@ export default function SignIn() {
                   type="email"
                   name="email"
                   id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-offblack rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   placeholder="name@company.com"
-                  required=""
+                  required
                 />
               </div>
               <div>
@@ -43,9 +63,11 @@ export default function SignIn() {
                   type="password"
                   name="password"
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-offblack rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
-                  required=""
+                  required
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -56,7 +78,7 @@ export default function SignIn() {
                       aria-describedby="remember"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300"
-                      required=""
+                      required
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -85,6 +107,15 @@ export default function SignIn() {
                   to={"/signup"}
                 >
                   Sign up
+                </Link>
+              </p>
+              <p className="text-sm font-light text-gray-500">
+                Not feeling like signin in?{" "}
+                <Link
+                  className="font-medium text-primary-600 hover:underline "
+                  to={"/"}
+                >
+                  Continue without signin in.
                 </Link>
               </p>
             </form>

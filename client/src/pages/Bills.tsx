@@ -2,6 +2,10 @@ import BillMenu from "../components/BillMenu";
 import { useState, useEffect } from "react";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
+import NewsLetterForm from "../components/NewsLetterForm";
+import { getCart } from "../store/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 interface Ad {
   imgSrc: string;
   link: string;
@@ -15,6 +19,9 @@ const ads: Ad[] = [
 
 export default function Bills() {
   const [adIndex, setAdIndex] = useState(0);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -25,6 +32,15 @@ export default function Bills() {
       clearTimeout(timerId);
     };
   }, []);
+
+  useEffect(() => {
+    dispatch(getCart());
+
+    // Fix for redirect to sign in if user is logged out.
+    if (!isAuthenticated) {
+      navigate("/signin");
+    }
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -59,6 +75,7 @@ export default function Bills() {
           </div>
         </div>
       </main>
+      <NewsLetterForm />
       <Footer />
     </>
   );
