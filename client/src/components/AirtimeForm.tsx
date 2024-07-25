@@ -1,8 +1,8 @@
 import { PrimaryBtn, SecondaryBtn } from "./Button";
 import Input from "./Input";
 import { ProviderRadio } from "./ProviderRadio";
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useState } from "react";
+import { useAppDispatch } from "../store/hooks";
 import { addCartItem } from "../store/cartSlice";
 import { CartItem } from "../types";
 import axios from "axios";
@@ -16,11 +16,6 @@ export default function AirtimeForm() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  console.log("Phone: ", phone);
-  console.log("Amount: ", amount);
-  console.log("Provider: ", provider);
-  console.log("Email: ", email);
 
   const dispatch = useAppDispatch();
   const BASE_URL = import.meta.env.VITE_BASE_URL;

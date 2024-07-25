@@ -1,6 +1,5 @@
 import { ProviderRadio } from "./ProviderRadio";
 import Input from "./Input";
-import Select from "./Select";
 import { SecondaryBtn, PrimaryBtn } from "./Button";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -19,11 +18,6 @@ export default function DataForm() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  console.log("Phone: ", phone);
-  console.log("Plan: ", plan);
-  console.log("Provider: ", provider);
-  console.log("Email: ", email);
 
   interface DataPlan {
     productId: string;
@@ -159,6 +153,7 @@ export default function DataForm() {
             Select plan
             {dataPlans.map((option, index) => (
               <option
+                key={index}
                 value={index}
               >{`${option.name} for ${option.currency}${option.denomination}`}</option>
             ))}

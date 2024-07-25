@@ -12,9 +12,18 @@ interface Ad {
 }
 
 const ads: Ad[] = [
-  { imgSrc: `https://picsum.photos/200/200`, link: "#" },
-  { imgSrc: `https://picsum.photos/200/200`, link: "#" },
-  { imgSrc: `https://picsum.photos/200/200`, link: "#" },
+  {
+    imgSrc: `https://res.cloudinary.com/dhfmfn3y7/image/upload/f_auto/portfolio_images/team_dtecteet_rmth1r.jpg`,
+    link: "#",
+  },
+  {
+    imgSrc: `https://res.cloudinary.com/dhfmfn3y7/image/upload/f_auto/portfolio_images/winner_announcement_gtxwkh.png`,
+    link: "#",
+  },
+  {
+    imgSrc: `https://res.cloudinary.com/dhfmfn3y7/image/upload/f_auto/portfolio_images/with_julien_zruuhm.jpg`,
+    link: "#",
+  },
 ];
 
 export default function Bills() {
@@ -27,7 +36,7 @@ export default function Bills() {
   useEffect(() => {
     const timerId = setInterval(() => {
       setAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
-    }, 5000); // Change ad after 5 seconds
+    }, 10000); // Change ad after 5 seconds
 
     return () => {
       clearInterval(timerId);
@@ -70,14 +79,14 @@ export default function Bills() {
               <>
                 <a href={ad.link}>
                   <img
-                    className="w-full rounded-md xl:h-[600px]"
+                    className="w-full rounded-md xl:h-[600px] object-cover"
                     alt="ad one"
                     src={ad.imgSrc}
                   ></img>
                 </a>
                 <a href={ad.link}>
                   <img
-                    className="w-full rounded-md xl:h-[200px]"
+                    className="w-full rounded-md xl:h-[200px] object-cover"
                     alt="ad one"
                     src={ad.imgSrc}
                   ></img>

@@ -22,7 +22,6 @@ const menuData = [
 
 export default function BillMenu() {
   const [active, setActive] = useState("airtime");
-  console.log("Active: ", active);
 
   return (
     <>
