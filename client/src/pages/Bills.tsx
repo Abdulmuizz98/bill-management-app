@@ -61,6 +61,7 @@ export default function Bills() {
 
           {ads.map((ad, index) => (
             <div
+              key={index}
               className={`hidden ${
                 adIndex === index &&
                 "xl:flex xl:object-contain xl:flex-col gap-y-10 xl:basis-1/4 "

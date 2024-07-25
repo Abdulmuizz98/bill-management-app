@@ -21,13 +21,13 @@ export const BmCheck = () => (
       height="14.33"
       rx="7.165"
       stroke="#5F2EEA"
-      stroke-width="1.67"
+      strokeWidth="1.67"
     />
     <path
       d="M11.3337 6.21664L7.04495 10.5054C6.88223 10.6681 6.61842 10.6681 6.4557 10.5054L4.66699 8.71664"
       stroke="#5F2EEA"
-      stroke-width="1.5"
-      stroke-linecap="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
     />
   </svg>
 );
@@ -60,7 +60,7 @@ export const BmAirtime = () => (
   </svg>
 );
 
-export const BmPhone = ({size=16}: {size?:number}) => (
+export const BmPhone = ({ size = 16 }: { size?: number }) => (
   <svg
     width={size}
     height={size}
@@ -82,7 +82,7 @@ export const BmPhone = ({size=16}: {size?:number}) => (
   </svg>
 );
 
-export const BmNaira = ({size=16}: {size?:number}) => (
+export const BmNaira = ({ size = 16 }: { size?: number }) => (
   <svg
     width={size}
     height={size}
@@ -95,7 +95,7 @@ export const BmNaira = ({size=16}: {size?:number}) => (
       cy="8.00002"
       r="7.33333"
       stroke="#667085"
-      stroke-width="1.33333"
+      strokeWidth="1.33333"
     />
     <path
       d="M5.33325 10.77V5.25824C5.33325 4.93899 5.56932 4.67608 5.87533 4.67608H5.98899C6.25128 4.67608 6.39992 4.81692 6.54855 5.0141L9.60866 9.26763V5.23007C9.60866 4.92021 9.84473 4.66669 10.1333 4.66669C10.4305 4.66669 10.6666 4.92021 10.6666 5.23007V10.7512C10.6666 11.0704 10.4393 11.324 10.142 11.324H10.0983C9.84473 11.324 9.68735 11.1831 9.53872 10.9765L6.39118 6.60096V10.77C6.39118 11.0798 6.15511 11.3334 5.86659 11.3334C5.56932 11.3334 5.33325 11.0798 5.33325 10.77Z"
@@ -116,7 +116,7 @@ export const BmNaira = ({size=16}: {size?:number}) => (
   </svg>
 );
 
-export const BmTrash = ({size=24}: {size?:number}) => (
+export const BmTrash = ({ size = 24 }: { size?: number }) => (
   <svg
     width={size}
     height={size}
@@ -127,18 +127,18 @@ export const BmTrash = ({size=24}: {size?:number}) => (
     <path
       d="M3 6H5M5 6H21M5 6V20C5 20.5304 5.21071 21.0391 5.58579 21.4142C5.96086 21.7893 6.46957 22 7 22H17C17.5304 22 18.0391 21.7893 18.4142 21.4142C18.7893 21.0391 19 20.5304 19 20V6H5ZM8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M10 11V17M14 11V17"
       stroke="#667085"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
 
-export const BmEdit = ({size=20}: {size?:number}) => (
+export const BmEdit = ({ size = 20 }: { size?: number }) => (
   <svg
-  width={size}
-  height={size}
-  viewBox={`0 0 20 20`}
+    width={size}
+    height={size}
+    viewBox={`0 0 20 20`}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >

@@ -31,8 +31,9 @@ export const ProviderRadio = ({ field, onChange }: ProviderRadioProps) => {
 
   return (
     <div className="flex flex-row w-full gap-2" ref={providerRef}>
-      {providers.map(({ name, value, icon }) => (
+      {providers.map(({ name, value, icon }, index) => (
         <label
+          key={index}
           htmlFor={name}
           className="provider-label flex-1 cursor-pointer flex flex-col justify-center items-center space-y-[5px]"
           onClick={handleSelection}

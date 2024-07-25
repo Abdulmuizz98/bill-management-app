@@ -27,8 +27,9 @@ export default function BillMenu() {
   return (
     <>
       <nav className="flex flex-row my-[36px] w-100 h-[44px] bg-yellow-500 font-medium">
-        {menuData.map(({ key, title }) => (
+        {menuData.map(({ key, title }, index) => (
           <button
+            key={index}
             type="button"
             className={`flex-1 xl:text-[16px] xl:font-medium ${
               active === key &&

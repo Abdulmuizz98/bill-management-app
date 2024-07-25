@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { LiaTimesCircle, LiaTimesSolid } from "react-icons/lia";
 import { CgMenuRightAlt } from "react-icons/cg";
 import { IoCartOutline } from "react-icons/io5";
@@ -88,13 +88,13 @@ const TopNav = ({ showChild }: TopNavProps) => {
   return (
     <nav className="">
       <div className="bg-white py-[20px] px-[20px] md:px-[80px] flex lg:gap-[50px] items-center justify-between lg:justify-between font-sans xl:max-w-[1280px] xl:m-auto xl:px-0">
-        <a href="/" className=" hidden lg:block">
+        <Link to="/" className=" hidden lg:block">
           <span className="text-[30px] font-[900]">Logo</span>
-        </a>
+        </Link>
         <div className="flex-1 hidden lg:flex items-center justify-end gap-10 ">
           {navOptions.map((n, index) => (
-            <a
-              href={n.link}
+            <Link
+              to={n.link}
               key={index * 73}
               className={`text-[16px] ${
                 location.pathname === n.link
@@ -103,7 +103,7 @@ const TopNav = ({ showChild }: TopNavProps) => {
               }`}
             >
               {n.text}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -245,13 +245,13 @@ const TopNav = ({ showChild }: TopNavProps) => {
           <div className="hidden lg:flex bg-[#FCFCFD]  py-[20px] px-[20px] md:px-[80px] items-center justify-between xl:max-w-[1280px] xl:m-auto xl:px-0">
             {activeChildren.length > 0 &&
               activeChildren.map((child, index) => (
-                <a
+                <Link
                   key={index}
-                  href={child.link}
+                  to={child.link}
                   className="text-[#1D2939] text-[14px] font-[700]"
                 >
                   {child.text}
-                </a>
+                </Link>
               ))}
             <button
               type="button"
