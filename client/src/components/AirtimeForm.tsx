@@ -28,7 +28,7 @@ export default function AirtimeForm() {
         `${BASE_URL}/bills/airtime-info/${phone}`
       );
       const data = await response.data;
-      console.log(data);
+      // console.log(data);
       const operator = data.opts?.operator;
       const productId = data.products?.[0]?.product_id;
 
@@ -48,7 +48,7 @@ export default function AirtimeForm() {
       await dispatch(addCartItem(payload));
       navigate("/checkout");
     } catch (e: any) {
-      console.log(e);
+      // console.log(e);
       toast.error(e.message);
       return;
     } finally {
