@@ -36,8 +36,8 @@ export default function Input({
         onChange={onChange}
       />
       <span
-        className={`absolute top-1/2 left-[24px] translate-y-[-50%] peer-focus:translate-y-[-100%] ${
-          field && "translate-y-[-110%]"
+        className={`absolute top-1/2 left-[24px] translate-y-[-50%] peer-focus:mt-[-15px] ${
+          field && "mt-[-15px]"
         }`}
       >
         {label}
