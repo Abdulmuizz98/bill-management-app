@@ -77,7 +77,7 @@ export default function DataForm() {
           toast.error(err.message);
         });
     }, 5000);
-    debouncePhoneAndProvider();
+    if (phone && provider) debouncePhoneAndProvider();
   }, [phone, provider]);
 
   function getNameFromProdId(prodId: string): string {
@@ -146,7 +146,7 @@ export default function DataForm() {
         >
           <select
             onChange={(e) => setPlan(dataPlans[parseInt(e.target.value, 10)])}
-            className={`text-offblack text-[16px] font-medium w-full h-full px-[24px] py-[19px] pt-[40px] bg-lightgray rounded-[16px] peer focus:outline-[#D0D5DD] ${
+            className={`text-offblack font-sans text-[15px] w-full h-full px-[24px] py-[19px] bg-lightgray rounded-[16px] peer focus:outline-[#D0D5DD] ${
               plan && "border-2 border-[#D0D5DD]"
             }`}
             id="select-plan"
@@ -155,19 +155,17 @@ export default function DataForm() {
             name="select-plan"
             required
           >
+            <option value="">Select plan</option>
+            Select plan
             {dataPlans.map((option, index) => (
               <option
                 value={index}
               >{`${option.name} for ${option.currency}${option.denomination}`}</option>
             ))}
           </select>
-          <span
-            className={`absolute top-1/2 left-[24px] translate-y-[-50%] peer-focus:translate-y-[-100%] ${
-              plan && "translate-y-[-110%]"
-            }`}
-          >
+          {/* <span className={`absolute top-1/2 left-[24px] translate-y-[-50%]`}>
             Select plan
-          </span>
+          </span> */}
         </label>
 
         <Input
