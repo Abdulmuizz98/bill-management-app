@@ -43,7 +43,6 @@ export default function Bills() {
     };
   }, []);
 
-  console.log("adIndex: ", adIndex);
   useEffect(() => {
     dispatch(getCart());
 
