@@ -160,12 +160,10 @@ export default function Checkout() {
         handlePaywithPaystack();
         break;
       case "bnpl":
-        console.log("Payment method not available");
-        //TODO: Toastify here
+        toast.error("Payment method not yet supported.");
         break;
       case "link":
-        console.log("Payment method not available");
-        //TODO: Toastify here
+        toast.error("Payment method not yet supported.");
         break;
       default:
         break;
