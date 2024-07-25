@@ -146,7 +146,7 @@ const TopNav = ({ showChild }: TopNavProps) => {
         >
           <IoCartOutline size={16} />
           <div className="absolute bg-purple w-[12px] h-[12px] rounded-[50%] flex items-center justify-center text-[5px] text-white font-[700] top-1 right-1">
-            2
+            {cartItems.length}
           </div>
         </button>
         <div
