@@ -1,121 +1,22 @@
 import express, { Request, Response } from "express";
 import { getAuthPayload } from "./auth";
 import axios from "axios";
-import Bull, { Job, QueueOptions } from "bull";
+import { paymentQueue, processPaymentQueue } from "./paymentQueue";
+import { transactionQueue, processTransactionQueue } from "./transactionQueue";
+import { queuePayments } from "./paymentQueue";
 
 const billsRouter = express.Router();
-
-interface Transaction {
-  amount: number;
-  provider: string;
-  productId: string;
-  customerRef: string;
-  phone: string;
-  category: "airtime" | "data";
-}
-
 const BASE_URL = process.env.SERVICE_BASE_URL || "";
 
-const options: QueueOptions = {
-  redis: {
-    host: process.env.REDIS_HOST,
-    port: Number(process.env.REDIS_PORT),
-  },
-};
-
-console.log(options.redis);
-
-const transactionQueue = new Bull("transaction", options);
-
-async function queueTransactions(transactions: Transaction[]) {
-  transactions.forEach((transaction) => {
-    transactionQueue.add({ ...transaction });
-  });
-}
-
-// TODO: Implement rety & refund after max retries logic
-// TODO: Implement Notification Service to notify on status of transactions.
-// TODO: Possibly save transaction records in a db
-async function processTransactionQueue(job: Job) {
-  const { data } = job;
-  console.log("Processing transaction: ", data);
-
-  const { category, provider, amount, productId, customerRef, phone } =
-    job.data;
-  console.log(`Processing ${category} transaction for: `, customerRef);
-
-  let isSuccess = false;
-  switch (category) {
-    case "airtime":
-    case "data":
-      isSuccess = await vendAirtimeOrData({
-        category,
-        amount,
-        productId,
-        customerRef,
-        phone,
-        provider,
-      });
-      break;
-    default:
-      break;
-  }
-
-  if (isSuccess) {
-    console.log(
-      `Transaction ${category} - ${customerRef} successfully completed`
-    );
-  } else {
-    console.log(`Transaction ${category} - ${customerRef} failed... Retrying`);
-  }
-}
-
+paymentQueue.process(processPaymentQueue);
 transactionQueue.process(processTransactionQueue);
-
-// Call API to vend airtime or data
-async function vendAirtimeOrData({
-  category,
-  amount,
-  productId,
-  customerRef,
-  phone,
-}: Transaction) {
-  const route = category === "airtime" ? "topup" : "datatopup";
-  const endpoint = `${BASE_URL}/api/${route}/exec/${phone}`;
-
-  const payload = {
-    product_id: productId,
-    denomination: amount,
-    send_sms: true,
-    sms_text: "",
-    customer_reference: customerRef,
-  };
-  const authPayload = await getAuthPayload();
-
-  try {
-    if (!authPayload) {
-      throw new Error("Failed to get auth payload");
-    }
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${authPayload.token}`,
-    };
-
-    const response = await axios.post(endpoint, payload, { headers });
-    return response.status === 201;
-  } catch (err) {
-    console.log("Error vending airtime: ", err);
-    return false;
-  }
-}
 
 // Callback to queue transactions on successful payment
 billsRouter.post("/queue-transactions", async (req: Request, res: Response) => {
-  const { transactions } = req.body;
+  const { transactionSet } = req.body;
 
   try {
-    await queueTransactions(transactions);
+    await queuePayments(transactionSet);
     // Generate API key for the user
     console.log("Transactions queued successfully");
 

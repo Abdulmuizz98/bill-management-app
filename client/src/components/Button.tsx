@@ -29,7 +29,7 @@ export function PrimaryBtn({ type, title }: BtnProps) {
   return (
     <button
       type={type}
-      className={`h-[56px] border border-purple  text-purple font-medium rounded-[40px] flex justify-center items-center`}
+      className={`h-[56px] border border-purple  text-purple font-medium rounded-[40px] flex justify-center items-center hover:scale-[1.02]`}
     >
       {title}
     </button>
@@ -40,7 +40,7 @@ export function SecondaryBtn({ type, title }: BtnProps) {
   return (
     <button
       type={type}
-      className={`h-[56px] border bg-purple text-white font-medium rounded-[40px] flex justify-center items-center`}
+      className={`h-[56px] border bg-purple text-white font-medium rounded-[40px] flex justify-center items-center hover:scale-[1.02]`}
     >
       {title}
     </button>

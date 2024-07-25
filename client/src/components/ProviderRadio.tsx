@@ -14,7 +14,6 @@ export const ProviderRadio = ({ field, onChange }: ProviderRadioProps) => {
   function handleSelection(e: React.MouseEvent<HTMLLabelElement, MouseEvent>) {
     choiceRef.current = e.currentTarget; // Get the label
 
-    console.log(choiceRef.current);
     // Find label with choice-provider class and toggle class off
     const prevLabel = providerRef.current?.querySelector(
       "label.choice-provider"

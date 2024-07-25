@@ -34,17 +34,28 @@ interface CartItem {
   _id?: string;
 }
 
+interface TransactionSet {
+  paymentMethod: PaymentMethod;
+  transactionId: string;
+  transactionRef: string;
+  transactions: Transaction[];
+}
+
 interface Transaction {
   amount: number;
   provider: string;
   productId: string;
   customerRef: string;
   phone: string;
+  email: string;
+  transactionId: string;
   category: "airtime" | "data";
 }
 
 function prepareTransactionFromCart(
   cart: CartItem[],
+  customerRef: string,
+  email: string,
   transId: string
 ): Transaction[] {
   const transactions: Transaction[] = [];
@@ -56,7 +67,9 @@ function prepareTransactionFromCart(
       provider,
       productId,
       phone,
-      customerRef: "",
+      email,
+      customerRef,
+      transactionId: `${transId}-${item.date}`,
       category: "airtime",
     };
 
@@ -65,7 +78,6 @@ function prepareTransactionFromCart(
     } else {
       trans.category = "data";
     }
-    trans.customerRef = `${transId}_${item.date}`;
     transactions.push(trans);
   });
 
@@ -76,7 +88,7 @@ type PaymentMethod = "paystack" | "bnpl" | "link";
 export default function Checkout() {
   const cartItems = useAppSelector((state) => state.cart.cartItems);
   const total = useAppSelector((state) => state.cart.total);
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const redirectToLogin = useAppSelector((state) => state.auth.redirectToLogin);
   const navigate = useNavigate();
   const gatewayFee = 0;
@@ -109,10 +121,22 @@ export default function Checkout() {
   // }
 
   function queueTransactions(transaction: any) {
-    const { trans: transId } = transaction;
+    const { trans: transactionId, trxref: transactionRef } = transaction;
     try {
-      const transactions = prepareTransactionFromCart(cartItems, transId);
-      const payload = { transactions: transactions };
+      const customerRef = isAuthenticated ? user!.id! : email;
+      const transactions = prepareTransactionFromCart(
+        cartItems,
+        customerRef,
+        email,
+        transactionId
+      );
+      const transactionSet: TransactionSet = {
+        transactions,
+        transactionId,
+        transactionRef,
+        paymentMethod: payMethod,
+      };
+      const payload = { transactionSet: transactionSet };
       axios
         .post(`${BASE_URL}/bills/queue-transactions`, payload)
         .then((response) => response.data)
@@ -262,7 +286,6 @@ export default function Checkout() {
           </div>
           <form
             onSubmit={handleSubmit}
-            action=""
             className="md:flex-1 rounded-[12px] border-[1px] border-[#EAECF0] bg-white p-[15px] md:p-[25px] flex flex-col gap-6"
           >
             <div className="flex flex-col ">
@@ -275,7 +298,8 @@ export default function Checkout() {
             </div>
             <div className="flex flex-col gap-4">
               <input
-                required
+                title="Please provide your full name"
+                required={true}
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
@@ -283,7 +307,8 @@ export default function Checkout() {
                 className="rounded-[16px] border-none outline-none bg-[#F2F4F7] p-4 placeholder:text-[#667085] placeholder:font-[500] text-[14px]"
               />
               <input
-                required
+                required={true}
+                title="Please provide your email address"
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -395,13 +420,13 @@ export default function Checkout() {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="md:flex-1 w-full rounded-[40px] h-[48px] border-[1px] border-purple flex items-center justify-center text-[14px] text-purple font-[500] font-sans"
+                className="md:flex-1 w-full rounded-[40px] h-[48px]  hover:scale-[1.02] border-[1px] border-purple flex items-center justify-center text-[14px] text-purple font-[500] font-sans"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="md:flex-1 w-full rounded-[40px] h-[48px] bg-purple flex items-center justify-center text-[14px] text-white font-[500] font-sans"
+                className="md:flex-1 w-full rounded-[40px] h-[48px] hover:scale-[1.02] bg-purple flex items-center justify-center text-[14px] text-white font-[500] font-sans"
               >
                 Pay ₦ {total}
               </button>

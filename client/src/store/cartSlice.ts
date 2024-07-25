@@ -123,8 +123,7 @@ export const removeCartItem = createAsyncThunk(
     if (!isAuthenticated && !user) {
       const cartData = localStorage.getItem("bma-cart") || "[]";
       const cart = JSON.parse(cartData) as CartItem[];
-      console.log("id: ", cartItemId);
-      console.log("cart: ", cart);
+
       const cartItemIndex = cart.findIndex(
         (item) => item.date === Number(cartItemId)
       );
@@ -132,7 +131,7 @@ export const removeCartItem = createAsyncThunk(
       if (cartItemIndex > -1) {
         const removedItem = cart.splice(cartItemIndex, 1)[0];
         localStorage.setItem("bma-cart", JSON.stringify(cart));
-        console.log("removedItem: ", removedItem);
+
         return { removedItem: removedItem };
       }
     } else {

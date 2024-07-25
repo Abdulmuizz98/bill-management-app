@@ -24,6 +24,7 @@ export default function AirtimeForm() {
     e.preventDefault();
 
     try {
+      toast.warning("Verifying phone number details...");
       const response = await axios.get(
         `${BASE_URL}/bills/airtime-info/${phone}`
       );
@@ -46,9 +47,11 @@ export default function AirtimeForm() {
         date: new Date().getTime(),
       };
       await dispatch(addCartItem(payload));
+      toast.success("Added to cart.");
       navigate("/checkout");
     } catch (e: any) {
       // console.log(e);
+      toast.dismiss();
       toast.error(e.message);
       return;
     } finally {
