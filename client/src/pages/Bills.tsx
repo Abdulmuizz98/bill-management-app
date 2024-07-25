@@ -46,9 +46,9 @@ export default function Bills() {
 
   return (
     <>
-      <TopNav />
+      <TopNav showChild={true} />
       <main>
-        <div className="w-full max-w-[390px] p-[15px] m-auto xl:flex xl:flex-row  xl:max-w-[1280px]  gap-10">
+        <div className="w-full max-w-[390px]  px-[15px] py-[32px] m-auto md:max-w-[500px] lg:max-w-[700px] xl:flex xl:flex-row  xl:max-w-[1280px] xl:py-[64px] gap-10">
           <div className="xl:basis-3/4 xl:border-[0.5px]  xl:border-[#EAECF0] xl:rounded-[12px] xl:p-[48px]">
             <h2 className="text-[18px] pb-2 font-bold text-offblack xl:text-[20px] ">
               Pay bills with ease
