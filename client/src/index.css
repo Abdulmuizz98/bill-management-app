@@ -4,9 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.provider-radio {
-}
-
 .provider-label.choice-provider .wrapper {
   border-color: #5f2eea;
 }
